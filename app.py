@@ -47,8 +47,8 @@ def inicializar_assistente():
                 ('user', '{input}')
             ])
             
-            # Usando o modelo rápido e gratuito da Groq
-            chat = ChatGroq(model='llama3-8b-8192', api_key=api_key)
+            # Usando o modelo mais poderoso e com maior memória da Groq
+            chat = ChatGroq(model='llama-3.3-70b-versatile', api_key=api_key)
             chain = template | chat
             
             st.session_state['chain'] = chain
