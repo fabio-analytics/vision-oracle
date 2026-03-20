@@ -12,10 +12,10 @@ st.markdown("""
 <style>
     /* Esconde elementos nativos do Streamlit */
     #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
+    header {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
     
-    /* 🔴 FORÇA O FUNDO A SER 100% TRANSPARENTE 🔴 */
+    /* FORÇA O FUNDO A SER 100% TRANSPARENTE */
     body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background: transparent !important;
         background-color: transparent !important;
@@ -23,13 +23,13 @@ st.markdown("""
     
     /* Remove o espaço em branco no topo */
     .block-container {
-        padding-top: 1rem;
-        padding-bottom: 0rem;
+        padding-top: 1rem !important;
+        padding-bottom: 0rem !important;
     }
     
     /* Otimiza a caixa de entrada para vidro */
     .stChatInputContainer {
-        padding-bottom: 20px;
+        padding-bottom: 20px !important;
         background: transparent !important;
     }
 
@@ -64,9 +64,17 @@ def inicializar_assistente():
             api_key = st.secrets["GROQ_API_KEY"] 
             documento = carrega_site('https://www.visiondatapro.com/')
             
+            # --- O NOVO CÉREBRO DA IA (REGRAS DE CONDUTA) ---
             system_message = '''Você é o Assistente Virtual Oficial do portfólio de Fábio Santana de Castro (VisionDataPro).
-            O seu objetivo é ser cordial, profissional e ajudar os visitantes a entenderem as habilidades, projetos e a experiência do Fábio.
-            Responda SEMPRE em português do Brasil de forma clara e objetiva. Valorize o trabalho do Fábio como Cientista de Dados.
+            Sua missão é ser um excelente anfitrião, agindo de forma educada, profissional e amigável.
+            
+            REGRAS DE CONVERSAÇÃO:
+            1. O usuário vai te dizer o nome dele. Assim que ele disser, cumprimente-o usando o nome dele de forma amigável.
+            2. Em seguida, pergunte diretamente como você pode ajudá-lo a conhecer melhor o trabalho do Fábio, suas habilidades em Ciência de Dados (como Python, SQL, Power BI, etc.) ou os projetos detalhados no site.
+            3. Responda SEMPRE em português do Brasil de forma clara e objetiva. Use emojis ocasionalmente para manter um tom acolhedor (🚀, 📊, 💻).
+            4. BLINDAGEM: Se o visitante fizer perguntas fora do escopo profissional, sobre política, religião, receitas, ou qualquer assunto não relacionado a Ciência de Dados e ao Fábio, recuse-se educadamente a responder e diga que seu foco é apenas falar sobre o portfólio e o trabalho do Fábio.
+            5. Valorize a experiência do Fábio (nível intermediário em Ciência de Dados, focado em entregar valor) e, se o usuário demonstrar interesse em contrato ou vagas, direcione-o para a aba de Contato do site.
+
             Use estas informações do site dele para basear suas respostas:
             ####
             {}
@@ -84,7 +92,11 @@ def inicializar_assistente():
             
             st.session_state['chain'] = chain
             st.session_state['memoria'] = MEMORIA
-            st.session_state['mensagens'] = [{"role": "ai", "content": "Olá! Sou o assistente de Inteligência Artificial do Fábio. Como posso te ajudar a conhecer melhor o trabalho dele na área de Dados hoje?"}]
+            
+            # --- A NOVA MENSAGEM DE BOAS-VINDAS INICIAL ---
+            st.session_state['mensagens'] = [
+                {"role": "ai", "content": "Olá! Seja muito bem-vindo ao portfólio VisionDataPro! 🚀\n\nSou o assistente de Inteligência Artificial do Fábio. Para começarmos bem, como você se chama?"}
+            ]
 
 def main():
     inicializar_assistente()
@@ -97,7 +109,7 @@ def main():
         with st.chat_message(msg["role"], avatar=avatar):
             st.markdown(msg["content"])
         
-    input_usuario = st.chat_input('Pergunte sobre as habilidades do Fábio...')
+    input_usuario = st.chat_input('Digite seu nome ou faça uma pergunta...')
     
     if input_usuario:
         st.chat_message('human', avatar="👤").markdown(input_usuario)
