@@ -7,18 +7,50 @@ from loaders import *
 # 1. Configuração inicial da página
 st.set_page_config(page_title="Assistente VisionDataPro", page_icon="👨‍💻", layout="centered")
 
-# 2. CSS Personalizado para remover cabeçalhos e otimizar espaço
+# 2. CSS SUPER PERSONALIZADO (Transparência total e Efeito Vidro)
 st.markdown("""
 <style>
+    /* Esconde elementos nativos do Streamlit */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Torna o fundo do Streamlit 100% transparente para mostrar o seu site por trás */
+    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+    
     /* Remove o espaço em branco no topo */
     .block-container {
         padding-top: 1rem;
         padding-bottom: 0rem;
     }
-    .stChatInputContainer {padding-bottom: 20px;}
+    .stChatInputContainer {
+        padding-bottom: 20px;
+        background: transparent !important;
+    }
+
+    /* 🔮 EFEITO VIDRO NAS MENSAGENS DO CHAT */
+    [data-testid="stChatMessage"] {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    /* 🔮 EFEITO VIDRO NOS AVATARES (AS CARINHAS) */
+    [data-testid="stChatMessageAvatar"] {
+        background-color: rgba(249, 115, 22, 0.15) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(249, 115, 22, 0.4) !important;
+        border-radius: 50% !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -53,13 +85,11 @@ def inicializar_assistente():
             st.session_state['mensagens'] = [{"role": "ai", "content": "Olá! Sou o assistente de Inteligência Artificial do Fábio. Como posso te ajudar a conhecer melhor o trabalho dele na área de Dados hoje?"}]
 
 def main():
-    # Inicialização automática (o título foi removido daqui conforme solicitado)
     inicializar_assistente()
     
     chain = st.session_state['chain']
     memoria = st.session_state['memoria']
     
-    # Renderiza o histórico de mensagens na tela com avatares humanos
     for msg in st.session_state.get('mensagens', []):
         avatar = "👨‍💻" if msg["role"] == "ai" else "👤"
         with st.chat_message(msg["role"], avatar=avatar):
