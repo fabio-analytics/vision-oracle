@@ -8,7 +8,7 @@ from loaders import *
 # 1. Configuração inicial da página
 st.set_page_config(page_title="Assistente VisionDataPro", page_icon="👨‍💻", layout="centered")
 
-# 2. CSS SUPER PERSONALIZADO (Transparência total e Efeito Vidro)
+# 2. CSS SUPER PERSONALIZADO (Vidro e Animações)
 st.markdown("""
 <style>
     /* Esconde elementos nativos do Streamlit */
@@ -54,6 +54,24 @@ st.markdown("""
         border: 1px solid rgba(249, 115, 22, 0.4) !important;
         border-radius: 50% !important;
     }
+
+    /* ⚡ ANIMAÇÃO DE ENERGIA NA CAIXA DE TEXTO ⚡ */
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0px rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.3); }
+        50% { box-shadow: 0 0 15px rgba(249, 115, 22, 0.5); border-color: rgba(249, 115, 22, 0.9); }
+        100% { box-shadow: 0 0 0px rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.3); }
+    }
+    
+    [data-testid="stChatInput"] {
+        background-color: rgba(15, 15, 15, 0.8) !important; /* Fundo levemente escuro */
+        border-radius: 18px !important;
+        animation: pulse-glow 3s infinite !important; /* Chama a animação de pulso */
+    }
+    
+    /* Pinta o ícone da setinha de enviar com o Laranja VisionDataPró */
+    [data-testid="stChatInputSubmitButton"] svg {
+        fill: #f97316 !important; 
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -97,7 +115,6 @@ def inicializar_assistente():
             st.session_state['chain'] = chain
             st.session_state['memoria'] = MEMORIA
             
-            # --- A NOVA MENSAGEM DE BOAS-VINDAS ---
             st.session_state['mensagens'] = [
                 {"role": "ai", "content": "Olá! Bem-vindo ao VisionDataPró!\nMeu nome é Vision-Oracle, a Inteligência. Qual o seu?"}
             ]
