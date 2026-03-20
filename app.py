@@ -65,18 +65,19 @@ def inicializar_assistente():
             api_key = st.secrets["GROQ_API_KEY"] 
             documento = carrega_site('https://www.visiondatapro.com/')
             
-            # --- O CÉREBRO DA IA: REGRAS SEM EMOJIS E MAIS SÉRIAS ---
-            system_message = '''Você é o Assistente Virtual Oficial do portfólio de Fábio Santana de Castro (VisionDataPro).
+            # --- O CÉREBRO DA IA: IDENTIDADE VISION-ORACLE ---
+            system_message = '''Você é o Vision-Oracle, a Inteligência Artificial Oficial do portfólio de Fábio Santana de Castro (VisionDataPro).
             Sua missão é ser um excelente anfitrião, agindo de forma educada, profissional, direta e séria.
             
             REGRAS DE CONVERSAÇÃO E TAMANHO DAS RESPOSTAS:
-            1. SEJA EXTREMAMENTE CONCISO E DIRETO AO PONTO. Suas respostas devem ser curtas e precisas.
-            2. Limite suas respostas a no MÁXIMO 2 parágrafos curtos. 
-            3. NÃO USE EMOJIS nas suas respostas. Mantenha um tom profissional e limpo.
-            4. O usuário vai te dizer o nome dele no início. Assim que ele disser, cumprimente-o pelo nome de forma educada e pergunte como pode ajudar.
-            5. Responda SEMPRE em português do Brasil.
-            6. BLINDAGEM: Se o visitante fizer perguntas fora do escopo profissional (ex: receitas, política), recuse-se educadamente a responder e diga que seu foco é apenas o trabalho do Fábio na Ciência de Dados.
-            7. Se o usuário demonstrar interesse em contratar o Fábio, direcione-o imediatamente para a aba de Contato.
+            1. SEU NOME É VISION-ORACLE.
+            2. SEJA EXTREMAMENTE CONCISO E DIRETO AO PONTO. Suas respostas devem ser curtas e precisas.
+            3. Limite suas respostas a no MÁXIMO 2 parágrafos curtos. 
+            4. NÃO USE EMOJIS nas suas respostas. Mantenha um tom profissional e limpo.
+            5. O usuário vai te dizer o nome dele no início da conversa. Assim que ele disser, cumprimente-o EXATAMENTE com a seguinte estrutura: "Prazer, [Nome do Usuário]! Eu vou estar te ajudando por aqui, tá bom? Como posso ajudá-lo hoje sobre o trabalho do Fábio?"
+            6. Responda SEMPRE em português do Brasil.
+            7. BLINDAGEM: Se o visitante fizer perguntas fora do escopo profissional (ex: receitas, política), recuse-se educadamente a responder e diga que seu foco é apenas o trabalho do Fábio na Ciência de Dados.
+            8. Se o usuário demonstrar interesse em contratar o Fábio, direcione-o imediatamente para a aba de Contato.
 
             Use estas informações do site dele para basear suas respostas:
             ####
@@ -96,9 +97,9 @@ def inicializar_assistente():
             st.session_state['chain'] = chain
             st.session_state['memoria'] = MEMORIA
             
-            # --- A NOVA MENSAGEM DE BOAS-VINDAS EXATA ---
+            # --- A NOVA MENSAGEM DE BOAS-VINDAS ---
             st.session_state['mensagens'] = [
-                {"role": "ai", "content": "Olá! Bem-vindo ao VisionDataPro!\nSou a Inteligência"}
+                {"role": "ai", "content": "Olá! Bem-vindo ao VisionDataPró!\nMeu nome é Vision-Oracle, a Inteligência. Qual o seu?"}
             ]
 
 def main():
@@ -115,25 +116,20 @@ def main():
     input_usuario = st.chat_input('Digite seu nome ou faça uma pergunta...')
     
     if input_usuario:
-        # 1. Mostra a mensagem do usuário imediatamente
         st.chat_message('human', avatar="👤").markdown(input_usuario)
         st.session_state['mensagens'].append({"role": "human", "content": input_usuario})
         
-        # 2. Prepara a área da resposta da IA
         chat_ai = st.chat_message('ai', avatar="👨‍💻")
         
-        # 3. Faz o efeito de "Digitando..." por 2 segundos dentro da bolha da IA
         with chat_ai:
             with st.spinner("Digitando..."):
                 time.sleep(2)
             
-            # 4. Agora sim ela começa a escrever (stream)
             resposta = st.write_stream(chain.stream({
                 'input': input_usuario, 
                 'chat_history': memoria.buffer_as_messages
             }))
         
-        # 5. Salva na memória
         memoria.chat_memory.add_user_message(input_usuario)
         memoria.chat_memory.add_ai_message(resposta)
         st.session_state['memoria'] = memoria
