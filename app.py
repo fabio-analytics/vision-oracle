@@ -15,8 +15,8 @@ st.markdown("""
     header {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Torna o fundo do Streamlit 100% transparente para mostrar o seu site por trás */
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+    /* 🔴 FORÇA O FUNDO A SER 100% TRANSPARENTE 🔴 */
+    body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background: transparent !important;
         background-color: transparent !important;
     }
@@ -26,6 +26,8 @@ st.markdown("""
         padding-top: 1rem;
         padding-bottom: 0rem;
     }
+    
+    /* Otimiza a caixa de entrada para vidro */
     .stChatInputContainer {
         padding-bottom: 20px;
         background: transparent !important;
@@ -43,7 +45,7 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
     }
 
-    /* 🔮 EFEITO VIDRO NOS AVATARES (AS CARINHAS) */
+    /* 🔮 EFEITO VIDRO NOS AVATARES */
     [data-testid="stChatMessageAvatar"] {
         background-color: rgba(249, 115, 22, 0.15) !important;
         backdrop-filter: blur(8px) !important;
